@@ -164,13 +164,15 @@
             <groupId>org.camunda.bpm</groupId>
             <artifactId>camunda-bpm-assert</artifactId>
         </dependency>
-        <dependency>
-            <!-- AssertJ Testing Library -->
-            <groupId>org.camunda.bpm.extension</groupId>
-            <artifactId>camunda-bpm-assert</artifactId>
-            <version>1.2</version>
-            <scope>test</scope>
-        </dependency>
+
+<!--        This is only needed for the weld container unit tests-->
+<!--        <dependency>-->
+<!--            &lt;!&ndash; AssertJ Testing Library &ndash;&gt;-->
+<!--            <groupId>org.camunda.bpm.extension</groupId>-->
+<!--            <artifactId>camunda-bpm-assert</artifactId>-->
+<!--            <version>1.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.camunda.community.process_test_coverage/camunda-process-test-coverage-starter-platform-7 -->
         <dependency>
             <groupId>org.camunda.community.process_test_coverage</groupId>
@@ -233,12 +235,12 @@
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jboss.weld/weld-core-impl -->
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-junit4</artifactId>
-            <version>4.0.3.Final</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.weld</groupId>-->
+<!--            <artifactId>weld-junit4</artifactId>-->
+<!--            <version>4.0.3.Final</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jboss.arquillian.container/arquillian-weld-embedded &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.jboss.arquillian.container</groupId>-->
@@ -247,29 +249,37 @@
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-core -->
-        <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet-core</artifactId>
-            <version>5.1.3.Final</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
-            <version>5.1.3.Final</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.weld.servlet</groupId>-->
+<!--            <artifactId>weld-servlet-core</artifactId>-->
+<!--            <version>5.1.3.Final</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.weld.se</groupId>-->
+<!--            <artifactId>weld-se-core</artifactId>-->
+<!--            <version>5.1.3.Final</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-impl</artifactId>
-            <version>5.1.3.Final</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.weld</groupId>-->
+<!--            <artifactId>weld-core-impl</artifactId>-->
+<!--            <version>5.1.3.Final</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
             <version>1.8.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jboss.arquillian.core/arquillian-core-api -->
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-api</artifactId>
+            <version>1.9.1.Final</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -338,6 +348,7 @@
             <!-- Run with: mvn clean test -Parq-wildfly-remote -->
             <id>wildfly-remote</id>
             <dependencies>
+                <!-- https://mvnrepository.com/artifact/org.wildfly.arquillian/wildfly-arquillian-container-remote -->
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-remote</artifactId>
@@ -352,12 +363,12 @@
                     <version>5.0.29.Final</version>
                     <scope>test</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.jboss.remotingjmx</groupId>
-                    <artifactId>remoting-jmx</artifactId>
-                    <version>3.0.4.Final</version>
-                    <scope>test</scope>
-                </dependency>
+<!--                <dependency>-->
+<!--                    <groupId>org.jboss.remotingjmx</groupId>-->
+<!--                    <artifactId>remoting-jmx</artifactId>-->
+<!--                    <version>3.0.4.Final</version>-->
+<!--                    <scope>test</scope>-->
+<!--                </dependency>-->
             </dependencies>
             <build>
                 <testResources>

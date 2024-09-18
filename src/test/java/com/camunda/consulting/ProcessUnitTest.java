@@ -3,10 +3,10 @@ package com.camunda.consulting;
 import jakarta.inject.Inject;
 import org.camunda.bpm.BpmPlatform;
 import org.camunda.bpm.ProcessEngineService;
-import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.impl.ProcessEngineImpl;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -22,9 +22,6 @@ import org.junit.runner.RunWith;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.filter;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.init;
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
 
 /**
  * Test case starting an in-memory database-backed Process Engine.
@@ -36,50 +33,63 @@ public class ProcessUnitTest {
 
     @Deployment
     public static Archive<?> createDeployment() {
-        WebArchive base = ShrinkWrap.create(WebArchive.class, "sample-test.war");
+        WebArchive base = ShrinkWrap.create(WebArchive.class);
+
+        JavaArchive[] jakartaCdi = Maven.configureResolver()
+                .workOffline()
+                .loadPomFromFile("pom.xml")
+                .resolve("org.camunda.bpm.javaee:camunda-ejb-client-jakarta")
+                .withTransitivity()
+                .as(JavaArchive.class);
+        JavaArchive[] engineCdi = Maven.configureResolver()
+                .workOffline()
+                .loadPomFromFile("pom.xml")
+                .resolve("org.camunda.bpm:camunda-engine-cdi-jakarta")
+                .withTransitivity()
+                .as(JavaArchive.class);
+
+        JavaArchive[] test = Maven.configureResolver()
+                .workOffline()
+                .loadPomFromFile("pom.xml")
+                .resolve("org.assertj:assertj-core")
+                .withTransitivity()
+                .as(JavaArchive.class);
+        JavaArchive[] bpmAware = Maven.configureResolver()
+                .workOffline()
+                .loadPomFromFile("pom.xml")
+                .resolve("org.camunda.bpm:camunda-bpm-assert")
+                .withTransitivity()
+                .as(JavaArchive.class);
         File[] libs = Maven.resolver()
                 .loadPomFromFile("pom.xml")
                 .importRuntimeAndTestDependencies()
                 .resolve()
-                .withTransitivity().asFile();
-        return base
+                .withTransitivity()
+                .asFile();
+        var archive = base
                 .addPackages(true, "com.camunda.consulting")
-                .addAsResource("META-INF/persistence.xml", "META-INF/processes.xml")
+                .addAsResource("META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource("process.bpmn")
                 .addClass(ProcessUnitTest.class)
-                .addAsLibraries(libs);
+                .addAsLibraries(jakartaCdi, engineCdi, test, bpmAware);
+//        System.out.println(archive.toString(true));
+        return archive;
     }
 
 
-//    @Inject
+    @Inject
     private ProcessEngine processEngine;
     private ProcessEngineService processEngineService;
-    //  protected ProcessArchiveService processArchiveService;
-    private FormService formService;
-    private HistoryService historyService;
-    private IdentityService identityService;
-    private ManagementService managementService;
-    private RepositoryService repositoryService;
+
     protected RuntimeService runtimeService;
-    private TaskService taskService;
-    private CaseService caseService;
-    private DecisionService decisionService;
+
 
     @Before
     public void setupBeforeTest() {
-        init(processEngine);
         processEngineService = BpmPlatform.getProcessEngineService();
         processEngine = processEngineService.getDefaultProcessEngine();
-        formService = processEngine.getFormService();
-        historyService = processEngine.getHistoryService();
-        identityService = processEngine.getIdentityService();
-        managementService = processEngine.getManagementService();
-        repositoryService = processEngine.getRepositoryService();
         runtimeService = processEngine.getRuntimeService();
-        taskService = processEngine.getTaskService();
-        caseService = processEngine.getCaseService();
-        decisionService = processEngine.getDecisionService();
     }
 
     @Test
@@ -88,7 +98,9 @@ public class ProcessUnitTest {
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceByKey(ProcessConstants.PROCESS_DEFINITION_KEY);
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(ProcessConstants.PROCESS_DEFINITION_KEY);
+//        System.out.println(processInstance.toString());
+//        assertThat(processInstance.getProcessDefinitionId()).isEqualTo(ProcessConstants.PROCESS_DEFINITION_KEY);
+        BpmnAwareTests.assertThat(processInstance).isEnded();
     }
 
 }
