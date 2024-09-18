@@ -17,10 +17,18 @@
             xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
     <defaultProtocol type="Servlet 5.0"/>
-    <container qualifier="weld">
+    <engine>
+        <property name="deploymentExportPath">target/</property>
+    </engine>
+
+    <container qualifier="wildfly-remote" default="true">
         <configuration>
-            <property name="enableConversationScope">true</property>
-            <property name="environment">SE</property>
+            <property name="managementAddress">127.0.0.1</property>
+            <property name="managementPort">9990</property>
+            <!-- since wildfly-arquillian 5.0.0 alpha2, the property protocol is deprecated and replaced by the property managementProtocol -->
+            <property name="managementProtocol">remote+http</property>
+            <property name="javaVmArguments">-Xmx1024m</property>
+            <property name="startupTimeoutInSeconds">300</property>
         </configuration>
     </container>
 </arquillian>

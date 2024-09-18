@@ -26,6 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <arquillian.version>1.9.1.Final</arquillian.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
+
     </properties>
 
     <dependencyManagement>
@@ -237,13 +239,13 @@
             <version>4.0.3.Final</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jboss.arquillian.container/arquillian-weld-embedded -->
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-weld-embedded</artifactId>
-            <version>4.0.0.Final</version>
-            <scope>test</scope>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jboss.arquillian.container/arquillian-weld-embedded &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.arquillian.container</groupId>-->
+<!--            <artifactId>arquillian-weld-embedded</artifactId>-->
+<!--            <version>4.0.0.Final</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-core -->
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
@@ -328,5 +330,59 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests in a remote
+                WildFly instance -->
+            <!-- Run with: mvn clean test -Parq-wildfly-remote -->
+            <id>wildfly-remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <version>5.0.1.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- To fix 5.0.0.Alpha2 issue:
+                https://github.com/wildfly/wildfly-arquillian/discussions/201#discussioncomment-1849214-->
+                <dependency>
+                    <groupId>org.jboss.remoting</groupId>
+                    <artifactId>jboss-remoting</artifactId>
+                    <version>5.0.29.Final</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.remotingjmx</groupId>
+                    <artifactId>remoting-jmx</artifactId>
+                    <version>3.0.4.Final</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <testResources>
+                    <testResource>
+                        <directory>src/test/arq-wildfly-remote</directory>
+                        <includes>
+                            <include>*</include>
+                        </includes>
+                    </testResource>
+                </testResources>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-failsafe-plugin.version}</version>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>wildfly-remote</arquillian.launch>
+                                <!--
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager> -->
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
