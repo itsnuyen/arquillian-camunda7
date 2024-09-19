@@ -68,10 +68,7 @@
             <groupId>org.camunda.bpm.javaee</groupId>
             <artifactId>camunda-ejb-client-jakarta</artifactId>
         </dependency>
-        <!--    <dependency>-->
-        <!--      <groupId>org.camunda.bpm.javaee</groupId>-->
-        <!--      <artifactId>camunda-ejb-client</artifactId>-->
-        <!--    </dependency>-->
+
         <dependency>
             <!-- CDI integration, needs to be included in WAR, otherwise CDI can not work correctly -->
             <groupId>org.camunda.bpm</groupId>
@@ -133,13 +130,11 @@
             <version>11.0.0-M4</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.camunda.bpm</groupId>
             <artifactId>camunda-bpm-junit5</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <!-- Needed for InMemoryH2Test -->
             <groupId>com.h2database</groupId>
@@ -181,7 +176,6 @@
             <artifactId>camunda-process-test-coverage-starter-platform-7</artifactId>
             <version>2.7.0</version>
         </dependency>
-
 
         <!-- use logback as logger -->
         <dependency>
@@ -251,6 +245,7 @@
             <version>1.9.1.Final</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <repositories>
@@ -488,7 +483,8 @@
                             <systemPropertyVariables>
                                 <arquillian.launch>wildfly-managed</arquillian.launch>
                                 <serverConfig>standalone.xml</serverConfig>
-                                <jboss.home.dir>${project.build.directory}/wildfly-${wildfly.version}</jboss.home.dir>
+                                <jboss.home.dir>${project.build.directory}/wildfly-${wildfly.version}
+                                </jboss.home.dir>
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
                         </configuration>
