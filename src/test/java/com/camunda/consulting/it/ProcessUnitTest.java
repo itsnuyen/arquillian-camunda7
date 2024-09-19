@@ -1,15 +1,13 @@
-package com.camunda.consulting;
+package com.camunda.consulting.it;
 
-import jakarta.inject.Inject;
+import com.camunda.consulting.ProcessConstants;
 import org.camunda.bpm.BpmPlatform;
 import org.camunda.bpm.ProcessEngineService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
-import org.hibernate.annotations.Target;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -37,12 +35,11 @@ public class ProcessUnitTest {
     public static Archive<?> createDeployment() {
         WebArchive base = ShrinkWrap.create(WebArchive.class, "sample-test.war");
 
-        var jakartaCdi = resolveDepdencies("org.camunda.bpm.javaee:camunda-ejb-client-jakarta");
-        var engineCdi = resolveDepdencies("org.camunda.bpm:camunda-engine-cdi-jakarta");
-        var assertTestClient = resolveDepdencies("org.camunda.bpm:camunda-engine-cdi-jakarta");
-        var bpmAware = resolveDepdencies("org.camunda.bpm:camunda-bpm-assert");
-        var assertJ = resolveDepdencies("org.assertj:assertj-core");
-//        var weld = resolveDepdencies("org.jboss.weld.servlet:weld-servlet-shaded");
+        var jakartaCdi = resolveDependencies("org.camunda.bpm.javaee:camunda-ejb-client-jakarta");
+        var engineCdi = resolveDependencies("org.camunda.bpm:camunda-engine-cdi-jakarta");
+        var assertTestClient = resolveDependencies("org.camunda.bpm:camunda-engine-cdi-jakarta");
+        var bpmAware = resolveDependencies("org.camunda.bpm:camunda-bpm-assert");
+        var assertJ = resolveDependencies("org.assertj:assertj-core");
         var archive = base
                 .addPackages(true, "com.camunda.consulting")
                 .addAsResource("META-INF/persistence.xml")
@@ -50,9 +47,6 @@ public class ProcessUnitTest {
                 .addAsResource("process.bpmn")
                 .addClass(ProcessUnitTest.class)
                 .addAsLibraries(jakartaCdi, engineCdi, assertTestClient, bpmAware, assertJ);
-
-//        base.addAsLibraries(weld);
-
         System.out.println(archive.toString(true));
         return archive;
     }
@@ -75,14 +69,13 @@ public class ProcessUnitTest {
 
     @Test
     public void testHappyPath() {
-        // Drive the process by API and assert correct behavior by camunda-bpm-assert
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceByKey(ProcessConstants.PROCESS_DEFINITION_KEY);
         assertThat(processInstance).isNotNull();
         BpmnAwareTests.assertThat(processInstance).isEnded();
     }
 
-    protected static JavaArchive[] resolveDepdencies(String depdencyPath) {
+    protected static JavaArchive[] resolveDependencies(String depdencyPath) {
         return Maven.configureResolver()
                 .workOffline()
                 .loadPomFromFile("pom.xml")

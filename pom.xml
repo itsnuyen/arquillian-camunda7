@@ -389,12 +389,12 @@
                     <version>5.0.1.Final</version>
                     <scope>test</scope>
                 </dependency>
-<!--                <dependency>-->
-<!--                    <groupId>org.wildfly.arquillian</groupId>-->
-<!--                    <artifactId>wildfly-arquillian-container-bootable</artifactId>-->
-<!--                    <version>5.0.1.Final</version>-->
-<!--                    <scope>test</scope>-->
-<!--                </dependency>-->
+                <!--                <dependency>-->
+                <!--                    <groupId>org.wildfly.arquillian</groupId>-->
+                <!--                    <artifactId>wildfly-arquillian-container-bootable</artifactId>-->
+                <!--                    <version>5.0.1.Final</version>-->
+                <!--                    <scope>test</scope>-->
+                <!--                </dependency>-->
             </dependencies>
 
             <build>
