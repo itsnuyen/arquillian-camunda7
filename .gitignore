@@ -8,6 +8,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/**
 *.iws
 *.iml
 *.ipr
@@ -20,7 +21,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
+target/**
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -30,7 +31,7 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+camunda-h2-dbs/**
 ### VS Code ###
 .vscode/
 
