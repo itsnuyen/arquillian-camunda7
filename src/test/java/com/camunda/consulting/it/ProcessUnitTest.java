@@ -43,8 +43,7 @@ public class ProcessUnitTest {
     public static Archive<?> createDeployment() {
         WebArchive base = ShrinkWrap.create(WebArchive.class, "sample-test.war");
         var dependencies = resolveDependencies(
-                "org.camunda.bpm:camunda-bpm-assert",
-                "org.assertj:assertj-core"
+                "org.camunda.bpm:camunda-bpm-assert"
         );
         File[] libs = Maven.resolver()
                 .loadPomFromFile("pom.xml")
@@ -54,10 +53,11 @@ public class ProcessUnitTest {
                 .asFile();
         var archive = base
                 .addPackages(true, "com.camunda.consulting")
-                .addAsResource("META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource("process.bpmn")
                 .addAsResource("sample_task.bpmn")
+                .addAsResource("META-INF/processes.xml")
+                .addAsResource("META-INF/persistence.xml")
                 .addClass(ProcessUnitTest.class)
                 .addAsLibraries(libs)
                 .addAsLibraries(dependencies);
