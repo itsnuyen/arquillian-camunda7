@@ -43,7 +43,8 @@ public class ProcessUnitTest {
     public static Archive<?> createDeployment() {
         WebArchive base = ShrinkWrap.create(WebArchive.class, "sample-test.war");
         var dependencies = resolveDependencies(
-                "org.camunda.bpm:camunda-bpm-assert"
+                "org.camunda.bpm:camunda-bpm-assert",
+                "org.assertj:assertj-core"
         );
         File[] libs = Maven.resolver()
                 .loadPomFromFile("pom.xml")
@@ -67,13 +68,12 @@ public class ProcessUnitTest {
 
 
     private ProcessEngine processEngine;
-    private ProcessEngineService processEngineService;
     protected RuntimeService runtimeService;
 
     @Before
     public void setupBeforeTest() {
         init(processEngine);
-        processEngineService = BpmPlatform.getProcessEngineService();
+        ProcessEngineService processEngineService = BpmPlatform.getProcessEngineService();
         processEngine = processEngineService.getDefaultProcessEngine();
         runtimeService = processEngine.getRuntimeService();
 
@@ -81,7 +81,6 @@ public class ProcessUnitTest {
 
     @Test
     public void testHappyPath() {
-        processEngineService.getDefaultProcessEngine().getRepositoryService().createDeployment().addClasspathResource("process.bpmn").deploy();
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceByKey(ProcessConstants.PROCESS_DEFINITION_KEY);
         assertThat(processInstance).isNotNull();
@@ -90,14 +89,16 @@ public class ProcessUnitTest {
 
 
     @Test
-    public void SampleUserServiceUserTask() {
-        processEngineService.getDefaultProcessEngine().getRepositoryService().createDeployment().addClasspathResource("sample_task.bpmn").deploy();
+    public void sampleUserServiceUserTask() {
         VariableMap map = Variables.putValue("user", "john");
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .startProcessInstanceByKey("Process_Sample_Task", map);
         assertNotNull(processInstance.getProcessInstanceId());
         TaskService taskService = processEngine.getTaskService();
-        Task task = taskService.createTaskQuery().singleResult();
+        Task task = taskService.createTaskQuery()
+//                .processDefinitionKey("Process_Sample_Task")
+                .processInstanceId(processInstance.getProcessInstanceId()) // both are possible
+                .singleResult();
         assertEquals(task.getName(), "Do Something with UserId");
         taskService.complete(task.getId());
         BpmnAwareTests.assertThat(processInstance).isEnded();
